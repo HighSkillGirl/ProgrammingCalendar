@@ -1,23 +1,33 @@
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.PrintStream;
 import java.time.LocalDate;
 import java.util.Arrays;
 
 public class MainApplication {
     public static void main(String[] programmingDays) {
 
-        LocalDate today = LocalDate.of(2025, 8, 1);
-        int dayOfWeek =  today.getDayOfWeek().getValue();
-        StringBuilder calendar = getCalendar(today, dayOfWeek);
+        LocalDate today = LocalDate.now();
 
-        Arrays.stream(programmingDays)
-              .forEach(day -> {
-                  int dayStartIndex = calendar.indexOf(day) + day.length();
-                  calendar.replace(dayStartIndex, dayStartIndex + 1, "*");
-              });
+        String calendarPath = String.format("out/%s_%d.txt", today.getMonth().toString().toLowerCase(), today.getYear());
 
-        System.out.print(calendar);
+        try (PrintStream out = new PrintStream(new FileOutputStream(calendarPath))) { // создает файл заново
+            today = today.minusDays(today.getDayOfMonth() - 1);
+            int dayOfWeek = today.getDayOfWeek().getValue();
+            StringBuilder calendar = createCalendar(today, dayOfWeek);
+
+            Arrays.stream(programmingDays)
+                  .forEach(day -> { int dayStartIndex = calendar.indexOf(day) + day.length();
+                                           calendar.replace(dayStartIndex, dayStartIndex + 1, "*");
+                  });
+            out.print(calendar);
+
+        } catch (FileNotFoundException e) {
+            System.out.println("Директория не найдена");
+        }
     }
 
-    private static StringBuilder getCalendar(LocalDate today, int dayOfWeek) {
+    private static StringBuilder createCalendar(LocalDate today, int dayOfWeek) {
         int monthSize = today.lengthOfMonth();
 
         StringBuilder calendar = new StringBuilder("ПН  ВТ  СР  ЧТ  ПТ  СБ  ВС\n");
