@@ -1,6 +1,4 @@
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
-import java.io.PrintStream;
+import java.io.*;
 import java.time.LocalDate;
 import java.util.Arrays;
 
@@ -11,19 +9,20 @@ public class MainApplication {
 
         String calendarPath = String.format("out/%s_%d.txt", today.getMonth().toString().toLowerCase(), today.getYear());
 
-        try (PrintStream out = new PrintStream(new FileOutputStream(calendarPath))) { // создает файл заново
+        File calendarFile = new File(calendarPath);
+
+        if (calendarFile.exists()) {
+            StringBuilder readCalendar = readCalendarFile(calendarPath);
+            markProgrammingDays(programmingDays, readCalendar);
+            writeUpdatedCalendarAsFile(calendarPath, readCalendar.toString());
+        } else {
             today = today.minusDays(today.getDayOfMonth() - 1);
             int dayOfWeek = today.getDayOfWeek().getValue();
             StringBuilder calendar = createCalendar(today, dayOfWeek);
 
-            Arrays.stream(programmingDays)
-                  .forEach(day -> { int dayStartIndex = calendar.indexOf(day) + day.length();
-                                           calendar.replace(dayStartIndex, dayStartIndex + 1, "*");
-                  });
-            out.print(calendar);
+            markProgrammingDays(programmingDays, calendar);
 
-        } catch (FileNotFoundException e) {
-            System.out.println("Директория не найдена");
+            writeUpdatedCalendarAsFile(calendarPath, calendar.toString());
         }
     }
 
@@ -41,5 +40,36 @@ public class MainApplication {
             calendar.append("\n");
         }
         return calendar;
+    }
+
+    private static StringBuilder readCalendarFile(String calendarPath) {
+        try (BufferedReader bufferedReader = new BufferedReader(new FileReader(calendarPath))) {
+            StringBuilder calendarBuilder = new StringBuilder();
+            String line = bufferedReader.readLine();
+
+            while (line != null) {
+                calendarBuilder.append(line);
+                calendarBuilder.append(System.lineSeparator());
+                line = bufferedReader.readLine();
+            }
+
+            return calendarBuilder;
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    private static void markProgrammingDays(String[] programmingDays, StringBuilder calendar) {
+        Arrays.stream(programmingDays)
+              .forEach(day -> {int dayStartIndex = calendar.indexOf(day) + day.length();
+                                     calendar.replace(dayStartIndex, dayStartIndex + 1, "*"); });
+    }
+
+    private static void writeUpdatedCalendarAsFile(String calendarPath, String calendar) {
+        try (PrintWriter writer = new PrintWriter(new FileOutputStream(calendarPath))) {
+            writer.print(calendar);
+        } catch (FileNotFoundException e) {
+            System.out.println("Что-то пошло не так");
+        }
     }
 }
