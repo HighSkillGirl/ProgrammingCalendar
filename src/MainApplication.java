@@ -12,9 +12,9 @@ public class MainApplication {
         File calendarFile = new File(calendarPath);
 
         if (calendarFile.exists()) {
-            StringBuilder readCalendar = readCalendarFile(calendarPath);
+            StringBuilder readCalendar = readCalendarFromFile(calendarPath);
             markProgrammingDays(programmingDays, readCalendar);
-            writeUpdatedCalendarAsFile(calendarPath, readCalendar.toString());
+            writeUpdatedCalendarToFile(calendarPath, readCalendar.toString());
         } else {
             today = today.minusDays(today.getDayOfMonth() - 1);
             int dayOfWeek = today.getDayOfWeek().getValue();
@@ -22,7 +22,7 @@ public class MainApplication {
 
             markProgrammingDays(programmingDays, calendar);
 
-            writeUpdatedCalendarAsFile(calendarPath, calendar.toString());
+            writeUpdatedCalendarToFile(calendarPath, calendar.toString());
         }
     }
 
@@ -42,7 +42,7 @@ public class MainApplication {
         return calendar;
     }
 
-    private static StringBuilder readCalendarFile(String calendarPath) {
+    private static StringBuilder readCalendarFromFile(String calendarPath) {
         try (BufferedReader bufferedReader = new BufferedReader(new FileReader(calendarPath))) {
             StringBuilder calendarBuilder = new StringBuilder();
             String line = bufferedReader.readLine();
@@ -65,8 +65,8 @@ public class MainApplication {
                                      calendar.replace(dayStartIndex, dayStartIndex + 1, "*"); });
     }
 
-    private static void writeUpdatedCalendarAsFile(String calendarPath, String calendar) {
-        try (PrintWriter writer = new PrintWriter(new FileOutputStream(calendarPath))) {
+    private static void writeUpdatedCalendarToFile(String calendarPath, String calendar) {
+        try (PrintWriter writer = new PrintWriter(new FileOutputStream(calendarPath), true)) {
             writer.print(calendar);
         } catch (FileNotFoundException e) {
             System.out.println("Что-то пошло не так");
