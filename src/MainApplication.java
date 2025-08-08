@@ -7,22 +7,23 @@ public class MainApplication {
 
         LocalDate today = LocalDate.now();
 
-        String calendarPath = String.format("out/%s_%d.txt", today.getMonth().toString().toLowerCase(), today.getYear());
+        String calendarPath = String.format("/home/vera/IdeaProjects/ProgrammingCalendar/out/%s_%d.txt", today.getMonth().toString().toLowerCase(), today.getYear());
 
         File calendarFile = new File(calendarPath);
 
         if (calendarFile.exists()) {
             StringBuilder readCalendar = readCalendarFromFile(calendarPath);
-            markProgrammingDays(programmingDays, readCalendar);
+            markProgrammingDays(programmingDays, readCalendar, today);
             writeUpdatedCalendarToFile(calendarPath, readCalendar.toString());
         } else {
             today = today.minusDays(today.getDayOfMonth() - 1);
             int dayOfWeek = today.getDayOfWeek().getValue();
             StringBuilder calendar = createCalendar(today, dayOfWeek);
 
-            markProgrammingDays(programmingDays, calendar);
+            markProgrammingDays(programmingDays, calendar, today);
 
             writeUpdatedCalendarToFile(calendarPath, calendar.toString());
+
         }
     }
 
@@ -59,10 +60,18 @@ public class MainApplication {
         }
     }
 
-    private static void markProgrammingDays(String[] programmingDays, StringBuilder calendar) {
+    private static void markProgrammingDays(String[] programmingDays, StringBuilder calendar, LocalDate today) {
         Arrays.stream(programmingDays)
-              .forEach(day -> {int dayStartIndex = calendar.indexOf(day) + day.length();
-                                     calendar.replace(dayStartIndex, dayStartIndex + 1, "*"); });
+              .forEach(day -> {
+                  int dayStartIndex;
+
+                  if (day.equals("today")) {
+                      String todayAsString = Integer.toString(today.getDayOfMonth());
+                      dayStartIndex = calendar.indexOf(todayAsString) + todayAsString.length();
+                  } else dayStartIndex = calendar.indexOf(day) + day.length();
+
+                  calendar.replace(dayStartIndex, dayStartIndex + 1, "*");
+              });
     }
 
     private static void writeUpdatedCalendarToFile(String calendarPath, String calendar) {
@@ -70,6 +79,7 @@ public class MainApplication {
             writer.print(calendar);
         } catch (FileNotFoundException e) {
             System.out.println("Что-то пошло не так");
+            e.printStackTrace();
         }
     }
 }
