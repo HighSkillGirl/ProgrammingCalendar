@@ -13,14 +13,14 @@ public class MainApplication {
 
         if (calendarFile.exists()) {
             StringBuilder readCalendar = readCalendarFromFile(calendarPath);
-            markProgrammingDays(programmingDays, readCalendar, today);
+            markProgrammingDays(programmingDays, readCalendar, today.getDayOfMonth());
             writeUpdatedCalendarToFile(calendarPath, readCalendar.toString());
         } else {
-            today = today.minusDays(today.getDayOfMonth() - 1);
-            int dayOfWeek = today.getDayOfWeek().getValue();
-            StringBuilder calendar = createCalendar(today, dayOfWeek);
+            LocalDate monthBegin = today.minusDays(today.getDayOfMonth() - 1);
+            int dayOfWeek = monthBegin.getDayOfWeek().getValue();
+            StringBuilder calendar = createCalendar(monthBegin, dayOfWeek);
 
-            markProgrammingDays(programmingDays, calendar, today);
+            markProgrammingDays(programmingDays, calendar, today.getDayOfMonth());
 
             writeUpdatedCalendarToFile(calendarPath, calendar.toString());
 
@@ -60,13 +60,13 @@ public class MainApplication {
         }
     }
 
-    private static void markProgrammingDays(String[] programmingDays, StringBuilder calendar, LocalDate today) {
+    private static void markProgrammingDays(String[] programmingDays, StringBuilder calendar, int todayOfMonth) {
         Arrays.stream(programmingDays)
               .forEach(day -> {
                   int dayStartIndex;
 
                   if (day.equals("today")) {
-                      String todayAsString = Integer.toString(today.getDayOfMonth());
+                      String todayAsString = Integer.toString(todayOfMonth);
                       dayStartIndex = calendar.indexOf(todayAsString) + todayAsString.length();
                   } else dayStartIndex = calendar.indexOf(day) + day.length();
 
@@ -79,7 +79,6 @@ public class MainApplication {
             writer.print(calendar);
         } catch (FileNotFoundException e) {
             System.out.println("Что-то пошло не так");
-            e.printStackTrace();
         }
     }
 }
