@@ -22,10 +22,10 @@ conky.config = {
     override_utf8_locale = true,
 
     default_color = 'white',
-    color1 = '#FFDD00',            -- для выделений
+    color1 = '#9DFF00',            -- для выделений
 };
 
 conky.text = [[
-${color1}📅 Мой календарь
+${color1}Programming Calendar
 ${color white}${exec /usr/local/bin/showcalendar}
 ]];
