@@ -19,9 +19,7 @@ public class MainApplication {
             LocalDate monthBegin = today.minusDays(today.getDayOfMonth() - 1);
             int dayOfWeek = monthBegin.getDayOfWeek().getValue();
             StringBuilder calendar = createCalendar(monthBegin, dayOfWeek);
-
             markProgrammingDays(programmingDays, calendar, today.getDayOfMonth());
-
             writeUpdatedCalendarToFile(calendarPath, calendar.toString());
 
         }
