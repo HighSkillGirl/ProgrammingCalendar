@@ -7,6 +7,7 @@ cd "$PROJECT_DIR" || {
 }
 
 mkdir -p out
-javac -d out src/MainApplication.java
+cd src
+javac -d out high/skill/girl/project/programming_calendar/main/ProgrammingCalendarApplication.java
 jar cfe out/ProgrammingCalendar.jar MainApplication -C out .
 java -jar "$PROJECT_DIR/out/ProgrammingCalendar.jar" "$@"

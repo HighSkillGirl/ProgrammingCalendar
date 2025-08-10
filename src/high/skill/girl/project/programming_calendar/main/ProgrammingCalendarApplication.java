@@ -1,8 +1,10 @@
+package high.skill.girl.project.programming_calendar.main;
+
 import java.io.*;
 import java.time.LocalDate;
 import java.util.Arrays;
 
-public class MainApplication {
+public class ProgrammingCalendarApplication {
     public static void main(String[] programmingDays) {
 
         LocalDate today = LocalDate.now();
