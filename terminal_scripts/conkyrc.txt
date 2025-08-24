@@ -8,12 +8,13 @@ conky.config = {
     -- Окно
     own_window = true,
     own_window_type = 'desktop',   -- без рамок, на фоне рабочего стола
+    own_window_name = 'ConkyProgrammingCalendar',  -- уникальное имя
     own_window_transparent = true,
     own_window_argb_visual = true,
     own_window_argb_value = 0,     -- прозрачность (0 = полностью прозрачно)
     own_window_hints = 'undecorated,below,sticky,skip_taskbar,skip_pager',
 
-    alignment = 'top_right',       -- положение: сверху справа
+    alignment = 'top_left',       -- положение: сверху справа
     gap_x = 50,                    -- отступ справа
     gap_y = 50,                    -- отступ сверху
 
